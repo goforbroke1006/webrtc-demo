@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebRTC demo (client)</title>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div>
+    <video id="localVideo" autoplay muted
+           width="320" height="240"></video>
+    <video id="remoteVideo" autoplay muted
+           width="960" height="600"></video>
+</div>
+
+<input type="button" id="start" onclick="start(true)" value="Start Video">
+
+<script>
+    pageReady();
+</script>
+
+</body>
+</html>
