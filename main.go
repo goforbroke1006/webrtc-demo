@@ -20,6 +20,18 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+type WebRtcStreamMeta struct {
+	Type string `json:"type"`
+	SDP  string `json:"sdp"`
+}
+
+type Peer struct {
+	SDP *WebRtcStreamMeta `json:"sdp"`
+	ICE *WebRtcStreamMeta `json:"ice"`
+}
+
+var connections = []*websocket.Conn{}
+
 func main() {
 	logger := log.New(os.Stdout, "server: ", log.Lshortfile)
 
@@ -31,14 +43,22 @@ func main() {
 			log.Println(err)
 			return
 		}
+		connections = append(connections, conn)
 
-		_, data, err := conn.ReadMessage()
+		peer := Peer{}
+		err = conn.ReadJSON(peer)
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		fmt.Println("data", string(data))
+		//fmt.Println("data", string(data))
 
+		for _, c := range connections {
+			/*if c == conn {
+				continue
+			}*/
+			c.WriteJSON(peer)
+		}
 	})
 	http.Handle("/", router)
 	if err := http.ListenAndServe(":8036", nil); nil != err {
